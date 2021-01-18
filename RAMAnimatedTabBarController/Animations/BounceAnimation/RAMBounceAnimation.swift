@@ -22,50 +22,69 @@
 
 import UIKit
 
+/// The RAMBounceAnimation class provides bounce animation.
+open class RAMBounceAnimation: RAMItemAnimation {
 
-public class RAMBounceAnimation : RAMItemAnimation {
+    /**
+     Start animation, method call when UITabBarItem is selected
 
-    override public func playAnimation(icon : UIImageView, textLabel : UILabel) {
+     - parameter icon:      animating UITabBarItem icon
+     - parameter textLabel: animating UITabBarItem textLabel
+     */
+    open override func playAnimation(_ icon: UIImageView, textLabel: UILabel) {
         playBounceAnimation(icon)
         textLabel.textColor = textSelectedColor
     }
 
-    override public func deselectAnimation(icon : UIImageView, textLabel : UILabel, defaultTextColor : UIColor, defaultIconColor: UIColor) {
+    /**
+     Start animation, method call when UITabBarItem is unselected
+
+     - parameter icon:      animating UITabBarItem icon
+     - parameter textLabel: animating UITabBarItem textLabel
+     - parameter defaultTextColor: default UITabBarItem text color
+     - parameter defaultIconColor: default UITabBarItem icon color
+     */
+    open override func deselectAnimation(_ icon: UIImageView, textLabel: UILabel, defaultTextColor: UIColor, defaultIconColor: UIColor) {
         textLabel.textColor = defaultTextColor
-      
+
         if let iconImage = icon.image {
-            let renderMode = CGColorGetAlpha(defaultIconColor.CGColor) == 0 ? UIImageRenderingMode.AlwaysOriginal :
-                                                                              UIImageRenderingMode.AlwaysTemplate
-            let renderImage = iconImage.imageWithRenderingMode(renderMode)
+            let renderMode = defaultIconColor.cgColor.alpha == 0 ? UIImage.RenderingMode.alwaysOriginal :
+                UIImage.RenderingMode.alwaysTemplate
+            let renderImage = iconImage.withRenderingMode(renderMode)
             icon.image = renderImage
             icon.tintColor = defaultIconColor
         }
     }
 
-    override public func selectedState(icon : UIImageView, textLabel : UILabel) {
+    /**
+     Method call when TabBarController did load
+
+     - parameter icon:      animating UITabBarItem icon
+     - parameter textLabel: animating UITabBarItem textLabel
+     */
+    open override func selectedState(_ icon: UIImageView, textLabel: UILabel) {
         textLabel.textColor = textSelectedColor
-      
+
         if let iconImage = icon.image {
-            let renderImage = iconImage.imageWithRenderingMode(.AlwaysTemplate)
+            let renderImage = iconImage.withRenderingMode(.alwaysTemplate)
             icon.image = renderImage
             icon.tintColor = iconSelectedColor
         }
     }
 
-    func playBounceAnimation(icon : UIImageView) {
+    func playBounceAnimation(_ icon: UIImageView) {
 
-        let bounceAnimation = CAKeyframeAnimation(keyPath: Constants.AnimationKeys.Scale)
-        bounceAnimation.values = [1.0 ,1.4, 0.9, 1.15, 0.95, 1.02, 1.0]
-        bounceAnimation.duration = NSTimeInterval(duration)
-        bounceAnimation.calculationMode = kCAAnimationCubic
+        let bounceAnimation = CAKeyframeAnimation(keyPath: Constants.AnimationKeys.scale)
+        bounceAnimation.values = [1.0, 1.4, 0.9, 1.15, 0.95, 1.02, 1.0]
+        bounceAnimation.duration = TimeInterval(duration)
+        bounceAnimation.calculationMode = CAAnimationCalculationMode.cubic
 
-        icon.layer.addAnimation(bounceAnimation, forKey: nil)
-      
+        icon.layer.add(bounceAnimation, forKey: nil)
+
         if let iconImage = icon.image {
-            let renderImage = iconImage.imageWithRenderingMode(.AlwaysTemplate)
+            let renderImage = iconImage.withRenderingMode(.alwaysTemplate)
             icon.image = renderImage
             icon.tintColor = iconSelectedColor
         }
     }
-
 }

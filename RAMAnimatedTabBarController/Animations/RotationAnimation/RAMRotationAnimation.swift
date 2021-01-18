@@ -20,83 +20,110 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import UIKit
 import QuartzCore
+import UIKit
 
-public enum RAMRotationDirection {
-    case Left
-    case Right
-}
+/// The RAMRotationAnimation class provides rotation animation.
+open class RAMRotationAnimation: RAMItemAnimation {
 
-public class RAMRotationAnimation : RAMItemAnimation {
+    /**
+     Animation direction
 
-    public var direction : RAMRotationDirection!
+     - Left:  left direction
+     - Right: right direction
+     */
+    public enum RAMRotationDirection {
+        case left
+        case right
+    }
 
-    override public func playAnimation(icon : UIImageView, textLabel : UILabel) {
+    /// Animation direction (left, right)
+    open var direction: RAMRotationDirection!
+
+    /**
+     Start animation, method call when UITabBarItem is selected
+
+     - parameter icon:      animating UITabBarItem icon
+     - parameter textLabel: animating UITabBarItem textLabel
+     */
+    open override func playAnimation(_ icon: UIImageView, textLabel: UILabel) {
         playRoatationAnimation(icon)
         textLabel.textColor = textSelectedColor
     }
 
-    override public func deselectAnimation(icon : UIImageView, textLabel : UILabel, defaultTextColor : UIColor, defaultIconColor : UIColor) {
+    /**
+     Start animation, method call when UITabBarItem is unselected
+
+     - parameter icon:      animating UITabBarItem icon
+     - parameter textLabel: animating UITabBarItem textLabel
+     - parameter defaultTextColor: default UITabBarItem text color
+     - parameter defaultIconColor: default UITabBarItem icon color
+     */
+    open override func deselectAnimation(_ icon: UIImageView, textLabel: UILabel, defaultTextColor: UIColor, defaultIconColor: UIColor) {
         textLabel.textColor = defaultTextColor
-      
+
         if let iconImage = icon.image {
-            let renderMode = CGColorGetAlpha(defaultIconColor.CGColor) == 0 ? UIImageRenderingMode.AlwaysOriginal :
-                                                                              UIImageRenderingMode.AlwaysTemplate
-            let renderImage = iconImage.imageWithRenderingMode(renderMode)
+            let renderMode = defaultIconColor.cgColor.alpha == 0 ? UIImage.RenderingMode.alwaysOriginal :
+                UIImage.RenderingMode.alwaysTemplate
+            let renderImage = iconImage.withRenderingMode(renderMode)
             icon.image = renderImage
             icon.tintColor = defaultIconColor
         }
     }
 
-    override public func selectedState(icon : UIImageView, textLabel : UILabel) {
+    /**
+     Method call when TabBarController did load
+
+     - parameter icon:      animating UITabBarItem icon
+     - parameter textLabel: animating UITabBarItem textLabel
+     */
+    open override func selectedState(_ icon: UIImageView, textLabel: UILabel) {
         textLabel.textColor = textSelectedColor
-      
+
         if let iconImage = icon.image {
-            let renderImage = iconImage.imageWithRenderingMode(.AlwaysTemplate)
+            let renderImage = iconImage.withRenderingMode(.alwaysTemplate)
             icon.image = renderImage
-            icon.tintColor = textSelectedColor
+            icon.tintColor = iconSelectedColor
         }
     }
 
-    func playRoatationAnimation(icon : UIImageView) {
+    func playRoatationAnimation(_ icon: UIImageView) {
 
-        let rotateAnimation = CABasicAnimation(keyPath: Constants.AnimationKeys.Rotation)
+        let rotateAnimation = CABasicAnimation(keyPath: Constants.AnimationKeys.rotation)
         rotateAnimation.fromValue = 0.0
 
-        var toValue = CGFloat(M_PI * 2.0)
-        if direction != nil && direction == RAMRotationDirection.Left {
+        var toValue = CGFloat.pi * 2
+        if direction != nil && direction == RAMRotationDirection.left {
             toValue = toValue * -1.0
         }
 
         rotateAnimation.toValue = toValue
-        rotateAnimation.duration = NSTimeInterval(duration)
+        rotateAnimation.duration = TimeInterval(duration)
 
-        icon.layer.addAnimation(rotateAnimation, forKey: nil)
-      
+        icon.layer.add(rotateAnimation, forKey: nil)
+
         if let iconImage = icon.image {
-            let renderImage = iconImage.imageWithRenderingMode(.AlwaysTemplate)
+            let renderImage = iconImage.withRenderingMode(.alwaysTemplate)
             icon.image = renderImage
             icon.tintColor = iconSelectedColor
         }
     }
 }
 
-class RAMLeftRotationAnimation : RAMRotationAnimation {
+/// The RAMLeftRotationAnimation class provides letf rotation animation.
+open class RAMLeftRotationAnimation: RAMRotationAnimation {
 
-    override init() {
+    public override init() {
         super.init()
-        direction = RAMRotationDirection.Left
+        direction = RAMRotationDirection.left
     }
 }
 
+/// The RAMRightRotationAnimation class provides rigth rotation animation.
+open class RAMRightRotationAnimation: RAMRotationAnimation {
 
-class RAMRightRotationAnimation : RAMRotationAnimation {
-
-    override init() {
+    public override init() {
         super.init()
-        direction = RAMRotationDirection.Right
+        direction = RAMRotationDirection.right
     }
 }
-
-

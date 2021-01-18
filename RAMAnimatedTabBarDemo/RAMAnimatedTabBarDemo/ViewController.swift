@@ -9,27 +9,17 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
+
     var index: NSInteger = 0
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     // PRAGMA: actions
-    
-    @IBAction func showBadge(sender: AnyObject) {
+    @IBAction func showBadgeHandelr(_: AnyObject) {
+        // example for showing badges
         index += 1
-        self.tabBarItem.badgeValue = "\(index)"
+        tabBarItem.badgeValue = "\(index)"
     }
-    
-    @IBAction func hideBadge(sender: AnyObject) {
-        self.tabBarItem.badgeValue = nil
+
+    @IBAction func hideBadgeHandler(_: AnyObject) {
+        tabBarItem.badgeValue = nil
     }
 }
